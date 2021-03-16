@@ -10,10 +10,10 @@
 # 原爬取PC站点需要用chromeDrive来渲染js之后才能获取元素dom
 from shutil import which
 #
-SELENIUM_DRIVER_NAME = 'chrome'
-SELENIUM_DRIVER_EXECUTABLE_PATH = which('chrome')
-SELENIUM_COMMAND_EXECUTOR = 'http://car_selenium_hub:4444/wd/hub'
-SELENIUM_DRIVER_ARGUMENTS = ['--headless']  # '--headless' if using chrome instead of firefox
+# SELENIUM_DRIVER_NAME = 'chrome'
+# SELENIUM_DRIVER_EXECUTABLE_PATH = which('chrome')
+# SELENIUM_COMMAND_EXECUTOR = 'http://car_selenium_hub:4444/wd/hub'
+# SELENIUM_DRIVER_ARGUMENTS = ['--headless']  # '--headless' if using chrome instead of firefox
 
 BOT_NAME = 'car'
 
@@ -21,7 +21,7 @@ SPIDER_MODULES = ['car.spiders']
 NEWSPIDER_MODULE = 'car.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36 SocketLog(tabid=132&client_id=)'
+USER_AGENT = 'Mozilla/5.0 (Linux; Android 6.0.1; Moto G (4)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
@@ -109,11 +109,11 @@ COOKIES_ENABLED = False
 REACTOR_THREADPOOL_MAXSIZE = 30
 
 # DB Setting
-MYSQL_HOST = 'car_mysql'
-MYSQL_PORT = 3306
-MYSQL_DBNAME = 'car_spider'
-MYSQL_USER = 'root'
-MYSQL_PASSWORD = 'root'
+# MYSQL_HOST = 'car_mysql'
+# MYSQL_PORT = 3306
+# MYSQL_DBNAME = 'car_spider'
+# MYSQL_USER = 'root'
+# MYSQL_PASSWORD = 'root'
 
 # RETRY_HTTP_CODES = [500, 502, 503, 504, 522, 524, 408]
 # RETRY_ENABLED = False

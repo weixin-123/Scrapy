@@ -49,16 +49,16 @@ services:
     build: .
     restart: always
     volumes:
-      - '/d/code/python/car:/workspace'
+      - '/d/PycharmProjects/car_spider:/workspace'
     networks:
       normal:
         aliases:
           - master
-#    command:
-#      - /bin/sh
-#      - -c
-#      - |
-#        python3 /workspace/car/igmain.py
+    command:
+      - /bin/sh
+      - -c
+      - |
+        python3 /workspace/car/main.py
 networks:
   normal:
     driver: bridge

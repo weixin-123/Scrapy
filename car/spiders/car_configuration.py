@@ -8,6 +8,7 @@ from car.items import CarBrandModelItem
 from car.items import CarBrandModelVersionItem
 from car.types import Types
 
+# 易车网
 base_url = 'http://car.m.yiche.com'
 img_base_url = 'http://photo.m.yiche.com/car/'
 
@@ -19,6 +20,7 @@ class CarConfiguration(scrapy.Spider):
     def start_requests(self):
         print('car_config running...')
 
+        # 入口url，扔到调度器里面去
         urls = ['http://car.m.yiche.com/']
         # 调试配置抓取，需设置callback为对应处理方法
         # urls = ['http://car.m.yiche.com/aodiq2haiwai/m139467/peizhi/?version_id=0']
@@ -30,33 +32,45 @@ class CarConfiguration(scrapy.Spider):
         # 调试图片抓取，需设置callback为对应处理方法
         # urls = ['http://car.m.yiche.com/x4/']
         for url in urls:
-            yield scrapy.Request(url=url, callback=self.parse)
+            yield scrapy.Request(url=urls, callback=self.parse)
 
+    # 默认解析方式
     def parse(self, response, **kwargs):
-        # 获取品牌列表
-        brand_list = response.xpath("//div[@class='brand-content']//dl")
+
+        print("品牌……")
+        print(response.url)
+        # 循环获取品牌列表
+        brand_list = response.xpath("//div[@class='brand-list-wrapper']//div[@class='brand-list']/div")
         brand_item = CarBrandItem()
+        print(brand_list)
         count = 0
         for brand in brand_list:
-            # 获取品牌首字母
+            # 获取品牌首字母,详细的数据解析
             brand_item['table_name'] = 'car_brand'
-            brand_item['first_letter'] = brand.xpath(".//dt/text()").extract_first()
+            brand_item['first_letter'] = brand.xpath("./@data-index").extract_first()
             # 获取该首字母下品牌列表
-            sub_brand_list = brand.xpath(".//dd")
+            sub_brand_list = brand.xpath(".//div[@class='item-brand']")
+            # 数据处理
             for sub_brand in sub_brand_list:
                 # 获取品牌名
-                brand_item['name'] = sub_brand.xpath(".//p/text()").extract_first()
+                brand_item['name'] = sub_brand.xpath("./@data-name").extract_first()
                 # 获取logo地址
-                brand_item['logo_url'] = sub_brand.xpath(".//img/@data-original").extract_first().replace('_4.', '_8.')
+                brand_item['logo_url'] = sub_brand.xpath(".//img/@src").extract_first().replace('_4.', '_8.')
                 # 获取该品牌 A标记 跳转地址（下级车型）
                 url = sub_brand.xpath(".//a/@href").extract_first()
-                # 返回品牌数据到 pipeline 写入数据库，返回携带新增id的item
+                # 返回品牌数据到 pipeline 写入数据库，返回携带新增id的item，进行数据的清洗
                 yield brand_item
                 count += 1
                 print(brand_item)
-                if url and self.black_list(url):
-                    url = base_url + url + '?brand_id=' + str(brand_item['id'])
-                    yield scrapy.Request(url=url.replace('/?', '?'), callback=self.model)
+                # if url and self.black_list(url):
+                #     url = base_url + url + '?brand_id=' + str(brand_item['id'])
+                #     yield scrapy.Request(url=url.replace('/?', '?'), callback=self.model)
+        # # 解析自动下一页（翻页）规则 ------------------------------------------------------------------------
+        # next_link = response.xpath("后一页的url").extract()
+        # if next_link:
+        #     next_link = next_link[0]
+        #     # 提交数据到调度器
+        #     yield scrapy.Request("爬取页面的url" + next_link, callback=self.version)
 
     def model(self, response):
         brand_id = parse.parse_qs(parse.urlparse(response.url).query)['brand_id'][0]
